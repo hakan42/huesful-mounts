@@ -252,3 +252,46 @@ module bj_hole_screw_mount() {
     }
 }
 
+
+// Socket for the original Philips Hue Dimmer Switch V2 (RWL022) wall holder.
+// The holder's front frame clips over this ring (in place of the original wall
+// backplate), like the V1 holder clips into dimmer_switch_v1_frame(); pull the
+// holder off to reach the switch below. The holder covers 80 x 125 mm, centred.
+//
+// Interface measured from two existing V2 mounts that clip the original holder:
+// "Hue Dimmer v2 Mount for GIRA Standard 55" (default values: 76.5 x 121.5 mm ring,
+// 3 mm wall, blind latch pockets) and makerworld.com/models/2061942 (76.7 x 121.8 mm).
+// If the holder snaps on too tightly, try size = [76.7, 121.8].
+module dimmer_switch_v2_frame(size = [76.5, 121.5]) {
+    w = size[0];
+    h = size[1];
+    wall = 3;
+    height = 5;
+    r_outer = 1;
+    r_inner = 1.5;
+
+    latch_len = 4.5;        // latch pockets on the outside of both long walls
+    latch_depth = 1;
+    latch_z = 1;
+    latch_h = 2.5;
+    latch_offset = 40;      // pocket centres, from the middle towards both ends
+
+    difference() {
+        linear_extrude(height) {
+            difference() {
+                rounded_rectangle(w, h, r_outer);
+                translate([wall, wall]) {
+                    rounded_rectangle(w - 2 * wall, h - 2 * wall, r_inner);
+                }
+            }
+        }
+
+        for (x = [-0.1, w - latch_depth]) {
+            for (y = [h / 2 - latch_offset, h / 2 + latch_offset]) {
+                translate([x, y - latch_len / 2, latch_z]) {
+                    cube([latch_depth + 0.1, latch_len, latch_h]);
+                }
+            }
+        }
+    }
+}
